@@ -5,18 +5,21 @@
 #include "CoreMinimal.h"
 #include "Actor/RimSpaceActorBase.h"
 #include "Data/TaskInfo.h"
+#include "Interface/CommandProvider.h"
 #include "WorkStation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RIMSPACE_API AWorkStation : public ARimSpaceActorBase
+class RIMSPACE_API AWorkStation : public ARimSpaceActorBase, public ICommandProvider
 {
 	GENERATED_BODY()
 public:
-	// UI相关接口
+	// CommandProvider接口
 	virtual TArray<FText> GetCommandList() const override;
+	virtual void ExecuteCommand(const FText& Command) override;
+	// Actor信息接口
 	virtual FString GetActorInfo() const override;
 
 	AWorkStation();

@@ -18,6 +18,10 @@ TArray<FText> ALoom::GetCommandList() const
 	return CommandList;
 }
 
+void ALoom::ExecuteCommand(const FText& Command)
+{
+}
+
 FString ALoom::GetActorInfo() const
 {
 	FString Info;

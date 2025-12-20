@@ -18,6 +18,10 @@ TArray<FText> ASewingMachine::GetCommandList() const
 	return CommandList;
 }
 
+void ASewingMachine::ExecuteCommand(const FText& Command)
+{
+}
+
 FString ASewingMachine::GetActorInfo() const
 {
 	FString Info;

@@ -54,20 +54,10 @@ FString ARimSpaceActorBase::GetActorName() const
 	return ActorName.ToString();
 }
 
-TArray<FText> ARimSpaceActorBase::GetCommandList() const
-{
-	// 不提供任何命令
-	return TArray<FText>();
-}
-
 FString ARimSpaceActorBase::GetActorInfo() const
 {
 	// 默认返回空字符串
 	return FString();
-}
-
-void ARimSpaceActorBase::ExecuteCommand(const FText& Command)
-{
 }
 
 void ARimSpaceActorBase::UpdateEachMinute_Implementation(int32 NewMinute)

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Actor/RimSpaceActorBase.h"
+#include "Interface/CommandProvider.h"
 #include "CultivateChamber.generated.h"
 
 /**
@@ -18,14 +19,15 @@ enum class ECultivateType : uint8
 };	
 
 UCLASS()
-class RIMSPACE_API ACultivateChamber : public ARimSpaceActorBase
+class RIMSPACE_API ACultivateChamber : public ARimSpaceActorBase, public ICommandProvider
 {
 	GENERATED_BODY()
 public:
-	// UI相关接口
+	// CommandProvider接口
 	virtual TArray<FText> GetCommandList() const override;
-	virtual FString GetActorInfo() const override;
 	virtual void ExecuteCommand(const FText& Command) override;
+	// ActorInfo接口
+	virtual FString GetActorInfo() const override;
 	// TimeAffectable接口
 	virtual void UpdateEachHour_Implementation(int32 NewHour) override;
 	void UpdateCultivateProgress();

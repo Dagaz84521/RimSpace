@@ -4,6 +4,7 @@
 #include "UI/CommandMenuWidget.h"
 #include "UI/CommandButtonWidget.h"
 #include "Components/VerticalBox.h"
+#include "Interface/CommandProvider.h"
 #include "Interface/InteractionActorInterface.h"
 
 void UCommandMenuWidget::InitializeMenu(AActor* TargetActor)
@@ -13,10 +14,10 @@ void UCommandMenuWidget::InitializeMenu(AActor* TargetActor)
 	{
 		return;
 	}
-	IInteractionActorInterface* InteractionActor = Cast<IInteractionActorInterface>(CurrentActor);
-	if (!InteractionActor)
+	ICommandProvider* CommandActor = Cast<ICommandProvider>(CurrentActor);
+	if (!CommandActor)
 		return;
-	TArray<FText> Commands = InteractionActor->GetCommandList();
+	TArray<FText> Commands = CommandActor->GetCommandList();
 	CommandListBox->ClearChildren();
 	for (const FText& Command : Commands)
 	{

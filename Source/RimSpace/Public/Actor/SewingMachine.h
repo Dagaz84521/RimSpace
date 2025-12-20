@@ -4,17 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "Actor/RimSpaceActorBase.h"
+#include "Interface/CommandProvider.h"
 #include "SewingMachine.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RIMSPACE_API ASewingMachine : public ARimSpaceActorBase
+class RIMSPACE_API ASewingMachine : public ARimSpaceActorBase, public ICommandProvider
 {
 	GENERATED_BODY()
 public:
 	virtual TArray<FText> GetCommandList() const override;
+	virtual void ExecuteCommand(const FText& Command) override;
+	
 	virtual FString GetActorInfo() const override;
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Loom", meta = (AllowPrivateAccess = "true"))

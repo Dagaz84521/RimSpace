@@ -4,6 +4,7 @@
 #include "UI/CommandButtonWidget.h"
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
+#include "Interface/CommandProvider.h"
 #include "Interface/InteractionActorInterface.h"
 
 void UCommandButtonWidget::Setup(const FText& CommandName, AActor* TargetActor)
@@ -21,10 +22,10 @@ void UCommandButtonWidget::OnButtonClicked()
 {
 	if (Actor)
 	{
-		IInteractionActorInterface* InteractionActor = Cast<IInteractionActorInterface>(Actor);
-		if (InteractionActor)
+		ICommandProvider* CommandActor = Cast<ICommandProvider>(Actor);
+		if (CommandActor)
 		{
-			InteractionActor->ExecuteCommand(Cmd);
+			CommandActor->ExecuteCommand(Cmd);
 		}
 	}
 }

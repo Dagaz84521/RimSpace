@@ -57,9 +57,6 @@ public:
 	virtual void UpdateEachMinute_Implementation(int32 NewMinute) override;
 	virtual void UpdateEachHour_Implementation(int32 NewHour) override;
 
-	
-
-	
 protected:
 	virtual void BeginPlay() override;
 

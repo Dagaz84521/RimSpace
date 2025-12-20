@@ -27,7 +27,5 @@ public:
 	virtual void UnHighlightActor() = 0;
 	// Get information about the actor for UI display
 	virtual FString GetActorName() const = 0;
-	virtual TArray<FText> GetCommandList() const = 0;
 	virtual FString GetActorInfo() const = 0;
-	virtual void ExecuteCommand(const FText& Command) = 0;
 };

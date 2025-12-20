@@ -19,6 +19,10 @@ TArray<FText> AStove::GetCommandList() const
 	return CommandList;
 }
 
+void AStove::ExecuteCommand(const FText& Command)
+{
+}
+
 FString AStove::GetActorInfo() const
 {
 	FString Info;

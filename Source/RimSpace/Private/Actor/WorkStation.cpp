@@ -6,7 +6,11 @@
 
 TArray<FText> AWorkStation::GetCommandList() const
 {
-	return Super::GetCommandList();
+	return TArray<FText>();
+}
+
+void AWorkStation::ExecuteCommand(const FText& Command)
+{
 }
 
 FString AWorkStation::GetActorInfo() const

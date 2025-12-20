@@ -24,9 +24,7 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	virtual FString GetActorName() const override;
-	virtual TArray<FText> GetCommandList() const override;
 	virtual FString GetActorInfo() const override;
-	virtual void ExecuteCommand(const FText& Command) override;
 	// TimeAffectable implementation
 	virtual void UpdateEachMinute_Implementation(int32 NewMinute);
 	virtual void UpdateEachHour_Implementation(int32 NewHour);
