@@ -1,0 +1,52 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Actor/RimSpaceActorBase.h"
+#include "CultivateChamber.generated.h"
+
+/**
+ * 
+ */
+UENUM(BlueprintType)
+enum class ECultivateType : uint8
+{
+	ECT_None UMETA(DisplayName = "None"),
+	ECT_Cotton UMETA(DisplayName = "Cotton"),
+	ECT_Corn UMETA(DisplayName = "Corn")
+};	
+
+UCLASS()
+class RIMSPACE_API ACultivateChamber : public ARimSpaceActorBase
+{
+	GENERATED_BODY()
+public:
+	// UI相关接口
+	virtual TArray<FText> GetCommandList() const override;
+	virtual FString GetActorInfo() const override;
+	virtual void ExecuteCommand(const FText& Command) override;
+	// TimeAffectable接口
+	virtual void UpdateEachHour_Implementation(int32 NewHour) override;
+	void UpdateCultivateProgress();
+	virtual void UpdateEachMinute_Implementation(int32 NewMinute) override;
+
+	ACultivateChamber();
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
+	TObjectPtr<class UInventoryComponent> OutputInventory;
+	
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CultivateChamber", meta = (AllowPrivateAccess = "true"))
+	ECultivateType CultivateType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CultivateChamber", meta = (AllowPrivateAccess = "true"))
+	int32 CultivateMaxProgress = 100;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CultivateChamber", meta = (AllowPrivateAccess = "true"))
+	int32 CultivateProgress;
+
+	// 临时物品存储区
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CultivateChamber", meta = (AllowPrivateAccess = "true"))
+	TMap<int32, int32> TempItemStorage; //todo: 后续可以改成TMap<FName, int32>或者使用enum
+};
