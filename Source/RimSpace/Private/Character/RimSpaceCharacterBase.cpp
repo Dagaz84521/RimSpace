@@ -6,7 +6,9 @@
 #include "Controller/RimSpaceAIController.h"
 #include "Subsystem/RimSpaceTimeSubsystem.h"
 #include "Component/InventoryComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "NavigationSystem.h"
+#include "RimSpace/RimSpace.h"
 
 // Sets default values
 ARimSpaceCharacterBase::ARimSpaceCharacterBase()
@@ -86,6 +88,7 @@ void ARimSpaceCharacterBase::OnMoveCompleted(FAIRequestID RequestID, EPathFollow
 
 	CurrentPlace = TargetPlace;
 	TargetPlace = nullptr;
+	
 }
 
 // Called every frame
@@ -126,6 +129,33 @@ void ARimSpaceCharacterBase::UpdateEachHour_Implementation(int32 NewHour)
 {
 	ITimeAffectable::UpdateEachHour_Implementation(NewHour);
 
+}
+
+void ARimSpaceCharacterBase::HighlightActor()
+{
+	GetMesh()->SetRenderCustomDepth(true);
+	GetMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_GREEN);
+}
+
+void ARimSpaceCharacterBase::UnHighlightActor()
+{
+	GetMesh()->SetRenderCustomDepth(false);
+}
+
+FString ARimSpaceCharacterBase::GetActorName() const
+{
+	return TEXT("Character");
+}
+
+FString ARimSpaceCharacterBase::GetActorInfo() const
+{
+	return FString::Printf(
+		TEXT("Hunger: %.1f / %.1f\nEnergy: %.1f / %.1f"),
+		CharacterStats.Hunger,
+		CharacterStats.MaxHunger,
+		CharacterStats.Energy,
+		CharacterStats.MaxEnergy
+	);
 }
 
 

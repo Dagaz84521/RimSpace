@@ -6,8 +6,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Actor/RimSpaceActorBase.h"
+#include "Interface/CommandProvider.h"
 #include "UI/StatusInfoWidget.h"
-#include "Interface/InteractionActorInterface.h"
+#include "Interface/InteractionInterface.h"
 #include "UI/CommandMenuWidget.h"
 
 void ARimSpacePlayerController::BeginPlay()
@@ -102,45 +103,71 @@ void ARimSpacePlayerController::CursorTrace()
 	GetHitResultUnderCursor(ECC_Visibility, false, CursorHit);
 	if (!CursorHit.bBlockingHit) return;
 	GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Green, TEXT("Cursor Trace Called"));
-	Cast<ARimSpaceActorBase>(CursorHit.GetActor());
+	AActor* HitActor = CursorHit.GetActor();
+	TScriptInterface<IInteractionInterface> NewInteractionTarget = HitActor;
+	LastInteractionTarget = CurrentInteractionTarget;
+	CurrentInteractionTarget = NewInteractionTarget;
 	// 由于当鼠标点击不同的Actor的时候，需要将上一个Actor的高光取消，同时将现在的高光开启
-	LastActor = ThisActor;
-	ThisActor = Cast<ARimSpaceActorBase>(CursorHit.GetActor());
-	if (LastActor != ThisActor)
+	if (LastInteractionTarget != CurrentInteractionTarget)
 	{
-		if (LastActor) LastActor->UnHighlightActor();
-		if (ThisActor) ThisActor->HighlightActor();
+		if (LastInteractionTarget) LastInteractionTarget->UnHighlightActor();
+		if (CurrentInteractionTarget) CurrentInteractionTarget->HighlightActor();
 	}
 }
 
 void ARimSpacePlayerController::RightClick(const FInputActionValue& Value)
 {
-	if (ThisActor)
+	AActor* HitActor = CursorHit.GetActor();
+	if (HitActor)
 	{
-		RightClickedActor = ThisActor;
-		SpawnCommandMenu();
+		// 尝试转换为 ICommandProvider
+		TScriptInterface<ICommandProvider> NewCommandTarget = HitActor;
+       
+		if (NewCommandTarget)
+		{
+			// 命中的 Actor 实现了命令接口
+			RightClickedCommandTarget = NewCommandTarget;
+			SpawnCommandMenu();
+		}
+		else
+		{
+			// 命中了 Actor，但它不能提供命令，清除旧的目标并关闭菜单
+			RightClickedCommandTarget = nullptr;
+			// 确保如果命中的是不可命令的 Actor，菜单也会关闭
+			UpdateCommandMenu(); 
+		}
 	}
 	else
 	{
-		RightClickedActor = nullptr;
+		// 没命中任何 Actor，清除目标并关闭菜单
+		RightClickedCommandTarget = nullptr;
+		UpdateCommandMenu(); 
 	}
 }
 
 void ARimSpacePlayerController::LeftClick(const FInputActionValue& Value)
 {
-	// 取消右键选中状态
-	if (ThisActor != RightClickedActor)
+	// 获取当前 CursorTrace 悬停的目标 Actor
+	AActor* CurrentHoverActor = CursorHit.GetActor();
+    
+	// 检查右键选中的命令目标是否有效
+	if (RightClickedCommandTarget)
 	{
-		RightClickedActor = nullptr;
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Left Clicked: Clear RightClickedActor"));
+		// 如果当前悬停的 Actor 不是或与 RightClickedCommandTarget 不相等
+		if (!CurrentHoverActor || CurrentHoverActor != RightClickedCommandTarget.GetObject())
+		{
+			RightClickedCommandTarget = nullptr; // 清除右键选中状态
+			UpdateCommandMenu(); // 关闭命令菜单
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Left Clicked: Clear RightClickedActor (Command Target)"));
+		}
 	}
 }
 
 void ARimSpacePlayerController::UpdateHoverInfo()
 {
-	if (ThisActor && HoverInfoWidget)
+	if (CurrentInteractionTarget && HoverInfoWidget)
 	{
-		IInteractionActorInterface* InteractionActor = Cast<IInteractionActorInterface>(ThisActor);
+		IInteractionInterface* InteractionActor = CurrentInteractionTarget.GetInterface();
 		UStatusInfoWidget* StatusInfoWidget = Cast<UStatusInfoWidget>(HoverInfoWidget);
 		if (InteractionActor && StatusInfoWidget)
 		{
@@ -168,12 +195,12 @@ void ARimSpacePlayerController::SpawnCommandMenu()
 		CommandMenuWidget->RemoveFromParent();
 		CommandMenuWidget = nullptr;
 	}
-	if (CommandMenuWidgetClass && RightClickedActor)
+	if (CommandMenuWidgetClass && RightClickedCommandTarget)
 	{
 		CommandMenuWidget = CreateWidget<UCommandMenuWidget>(this, CommandMenuWidgetClass);
 		if (CommandMenuWidget)
 		{
-			CommandMenuWidget->InitializeMenu(RightClickedActor);
+			CommandMenuWidget->InitializeMenu(RightClickedCommandTarget);
 			CommandMenuWidget->AddToViewport();
 			FVector2D MousePosition;
 			GetMousePosition(MousePosition.X, MousePosition.Y);
@@ -184,7 +211,7 @@ void ARimSpacePlayerController::SpawnCommandMenu()
 
 void ARimSpacePlayerController::UpdateCommandMenu()
 {
-	if (CommandMenuWidget && !RightClickedActor)
+	if (CommandMenuWidget && !RightClickedCommandTarget)
 	{
 		CommandMenuWidget->RemoveFromParent();
 		CommandMenuWidget = nullptr;

@@ -5,12 +5,12 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Interface/CommandProvider.h"
-#include "Interface/InteractionActorInterface.h"
+#include "Interface/InteractionInterface.h"
 
-void UCommandButtonWidget::Setup(const FText& CommandName, AActor* TargetActor)
+void UCommandButtonWidget::Setup(const FText& CommandName, TScriptInterface<ICommandProvider> TargetProvider)
 {
 	Cmd = CommandName;
-	Actor = TargetActor;
+	CommandActor = TargetProvider;
 	if (Label)
 	{
 		Label->SetText(CommandName);
@@ -20,9 +20,8 @@ void UCommandButtonWidget::Setup(const FText& CommandName, AActor* TargetActor)
 
 void UCommandButtonWidget::OnButtonClicked()
 {
-	if (Actor)
+	if (CommandActor)
 	{
-		ICommandProvider* CommandActor = Cast<ICommandProvider>(Actor);
 		if (CommandActor)
 		{
 			CommandActor->ExecuteCommand(Cmd);

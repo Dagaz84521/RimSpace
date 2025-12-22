@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Data/ItemData.h"
-#include "RimSpaceItemGameInstance.generated.h"
+#include "RimSpaceGameInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RIMSPACE_API URimSpaceItemGameInstance : public UGameInstance
+class RIMSPACE_API URimSpaceGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:

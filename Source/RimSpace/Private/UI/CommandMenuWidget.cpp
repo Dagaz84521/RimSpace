@@ -5,19 +5,18 @@
 #include "UI/CommandButtonWidget.h"
 #include "Components/VerticalBox.h"
 #include "Interface/CommandProvider.h"
-#include "Interface/InteractionActorInterface.h"
+#include "Interface/InteractionInterface.h"
 
-void UCommandMenuWidget::InitializeMenu(AActor* TargetActor)
+void UCommandMenuWidget::InitializeMenu(TScriptInterface<ICommandProvider> TargetProvider)
 {
-	CurrentActor = TargetActor;
+	CurrentActor = TargetProvider;
 	if (!CurrentActor || !CommandButtonClass || !CommandListBox)
 	{
 		return;
 	}
-	ICommandProvider* CommandActor = Cast<ICommandProvider>(CurrentActor);
-	if (!CommandActor)
+	if (!CurrentActor)
 		return;
-	TArray<FText> Commands = CommandActor->GetCommandList();
+	TArray<FText> Commands = CurrentActor->GetCommandList();
 	CommandListBox->ClearChildren();
 	for (const FText& Command : Commands)
 	{

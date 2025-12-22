@@ -12,10 +12,11 @@
 
 class UCommandMenuWidget;
 class ARimSpaceActorBase;
-class IInteractionActorInterface;
+class IInteractionInterface;
 struct FInputActionValue;
 class UInputAction;
 class UInputMappingContext;
+class ICommandProvider;
 
 UCLASS
 
@@ -56,10 +57,12 @@ private:
 	//鼠标控制
 	void CursorTrace();
 	FHitResult CursorHit;
-	TObjectPtr<ARimSpaceActorBase> LastActor;
-	TObjectPtr<ARimSpaceActorBase> ThisActor;
-	TObjectPtr<ARimSpaceActorBase> LeftClickedActor;
-	TObjectPtr<ARimSpaceActorBase> RightClickedActor;
+	UPROPERTY()
+	TScriptInterface<IInteractionInterface> LastInteractionTarget;
+	UPROPERTY()
+	TScriptInterface<IInteractionInterface> CurrentInteractionTarget;
+	UPROPERTY()
+	TScriptInterface<ICommandProvider> RightClickedCommandTarget;
 	//右键
 	void RightClick(const FInputActionValue& Value);
 	UPROPERTY(EditAnywhere, Category = "Input")

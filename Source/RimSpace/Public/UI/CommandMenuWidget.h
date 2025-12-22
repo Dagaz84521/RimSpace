@@ -15,7 +15,7 @@ class RIMSPACE_API UCommandMenuWidget : public UUserWidget
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
-	void InitializeMenu(AActor* TargetActor);
+	void InitializeMenu(TScriptInterface<ICommandProvider> TargetProvider);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -26,5 +26,5 @@ protected:
 
 private:
 	UPROPERTY()
-	AActor* CurrentActor;
+	TScriptInterface<ICommandProvider> CurrentActor;
 };

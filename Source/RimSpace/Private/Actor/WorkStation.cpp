@@ -15,7 +15,14 @@ void AWorkStation::ExecuteCommand(const FText& Command)
 
 FString AWorkStation::GetActorInfo() const
 {
-	return Super::GetActorInfo();
+	FString Info;
+	FString InputInfo = InputInventory->GetInventoryInfo();
+	FString OutputInfo = OutputInventory->GetInventoryInfo();
+	Info += TEXT("=== 输入库存 ===\n");
+	Info += InputInfo;
+	Info += TEXT("=== 输出库存 ===\n");
+	Info += OutputInfo;
+	return Info;
 }
 
 AWorkStation::AWorkStation()

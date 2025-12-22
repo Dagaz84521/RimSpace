@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Interface/InteractionActorInterface.h"
+#include "Interface/InteractionInterface.h"
 
 // Add default functionality here for any IInteractionActorInterface functions that are not pure virtual.

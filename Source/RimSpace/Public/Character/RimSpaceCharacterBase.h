@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Interface/TimeAffectable.h"
 #include "AIController.h"
+#include "Interface/InteractionInterface.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "RimSpaceCharacterBase.generated.h"
 
@@ -43,7 +44,7 @@ struct FRimSpaceCharacterSkills
 };
 
 UCLASS()
-class RIMSPACE_API ARimSpaceCharacterBase : public ACharacter, public ITimeAffectable
+class RIMSPACE_API ARimSpaceCharacterBase : public ACharacter, public ITimeAffectable, public IInteractionInterface
 {
 	GENERATED_BODY()
 
@@ -57,6 +58,11 @@ public:
 	virtual void UpdateEachMinute_Implementation(int32 NewMinute) override;
 	virtual void UpdateEachHour_Implementation(int32 NewHour) override;
 
+	virtual void HighlightActor() override;
+	virtual void UnHighlightActor() override;
+	virtual FString GetActorName() const override;
+	virtual FString GetActorInfo() const override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -64,8 +70,8 @@ protected:
 	void MoveToPoint(ARimSpaceActorBase* Target); // 移动到指定地点
 	UFUNCTION()
 	void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
-	void TakeItem(); // 从当前地点拾取物品
-	void PutItem(); // 在当前地点放下携带物品
+	void TakeItem(int32 ItemID); // 从当前地点拾取物品
+	void PutItem(int32 ItemId); // 在当前地点放下携带物品
 	void UseCurrent(); // 使用当前地点功能
 
 	// 人物基本属性

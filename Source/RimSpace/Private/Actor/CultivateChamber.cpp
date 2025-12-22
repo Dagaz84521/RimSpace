@@ -24,6 +24,7 @@ TArray<FText> ACultivateChamber::GetCommandList() const
 FString ACultivateChamber::GetActorInfo() const
 {
 	FString Info;
+	Info += TEXT("=== 种植舱信息 ===\n");
 	Info += FString::Printf(TEXT("培养类型: "));
 	switch (CultivateType)
 	{
@@ -38,11 +39,8 @@ FString ACultivateChamber::GetActorInfo() const
 		break;
 	}
 	Info += FString::Printf(TEXT("培养进度: %d / %d\n"), CultivateProgress, CultivateMaxProgress);
-	Info += FString::Printf(TEXT("临时存储区物品:\n"));
-	for (const TPair<int32, int32>& ItemPair : TempItemStorage)
-	{
-		Info += FString::Printf(TEXT("  物品ID: %d 数量: %d\n"), ItemPair.Key, ItemPair.Value);
-	}
+	Info += TEXT("=== 临时存储区 ===\n");
+	Info += OutputInventory->GetInventoryInfo();
 	return Info;
 }
 

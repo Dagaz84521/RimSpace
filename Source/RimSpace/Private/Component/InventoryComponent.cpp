@@ -4,6 +4,7 @@
 #include "Component/InventoryComponent.h"
 
 #include "Data/ItemData.h"
+#include "GameInstance/RimSpaceGameInstance.h"
 
 // Sets default values for this component's properties
 UInventoryComponent::UInventoryComponent()
@@ -34,27 +35,49 @@ void UInventoryComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	// ...
 }
 
+FString UInventoryComponent::GetInventoryInfo() const
+{
+	FString Info = FString::Printf(TEXT("InventorySpace: %d / %d\n"), UsedSpace, TotalSpace);
+	auto* GI = Cast<URimSpaceGameInstance>(GetWorld()->GetGameInstance());
+	if (!GI) return TEXT("Invalid GameInstance\n");
+	for (const FItemStack& Stack : Items)
+	{
+		if (Stack.Count <= 0)
+			continue;
+
+		const UItemData* ItemData = GI->GetItemData(Stack.ItemID);
+		if (!ItemData)
+			continue;
+
+		Info += FString::Printf(
+			TEXT("%s × %d\n"),
+			*ItemData->DisplayName.ToString(),
+			Stack.Count
+		);
+	}
+	return Info;
+}
+
 bool UInventoryComponent::AddItem(const FItemStack& Item)
 {
-	return false;
-	/*if (!Item.IsValid())
-	{
+	if (!Item.IsValid())
 		return false;
-	}
 
-	const UItemData* ItemData = 
-	if (!ItemData)
-	{
+	if (!CheckItemIsAccepted(Item))
 		return false;
-	}
+
+	URimSpaceGameInstance* GI = GetWorld()->GetGameInstance<URimSpaceGameInstance>();
+	if (!GI)
+		return false;
+
+	const UItemData* ItemData = GI->GetItemData(Item.ItemID);
+	if (!ItemData)
+		return false;
 
 	const int32 NeededSpace = Item.Count * ItemData->SpaceCost;
 	if (UsedSpace + NeededSpace > TotalSpace)
-	{
-		return false; // 空间不足
-	}
+		return false;
 
-	// 尝试堆叠
 	for (FItemStack& Stack : Items)
 	{
 		if (Stack.ItemID == Item.ItemID)
@@ -65,16 +88,52 @@ bool UInventoryComponent::AddItem(const FItemStack& Item)
 		}
 	}
 
-	// 没有同类，新增一个 Stack
 	Items.Add(Item);
 	UsedSpace += NeededSpace;
-	return true;*/
+	return true;
 }
 
 bool UInventoryComponent::RemoveItem(const FItemStack& Item)
 {
+	if (!Item.IsValid())
+		return false;
+
+	URimSpaceGameInstance* GI = GetWorld()->GetGameInstance<URimSpaceGameInstance>();
+	if (!GI)
+		return false;
+
+	const UItemData* ItemData = GI->GetItemData(Item.ItemID);
+	if (!ItemData)
+		return false;
+
+	for (int32 i = 0; i < Items.Num(); ++i)
+	{
+		FItemStack& Stack = Items[i];
+		if (Stack.ItemID == Item.ItemID)
+		{
+			if (Stack.Count < Item.Count)
+				return false;
+
+			Stack.Count -= Item.Count;
+			UsedSpace = FMath::Max(
+				0,
+				UsedSpace - Item.Count * ItemData->SpaceCost
+			);
+
+			if (Stack.Count == 0)
+				Items.RemoveAt(i);
+
+			return true;
+		}
+	}
 	return false;
 }
+
+bool UInventoryComponent::CheckItemIsAccepted(const FItemStack& Item)
+{
+	return true;
+}
+
 
 int32 UInventoryComponent::GetItemCount(int32 ItemID) const
 {

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Data/ItemData.h"
 #include "Data/ItemStack.h"
 #include "InventoryComponent.generated.h"
 
@@ -19,8 +20,11 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	FString GetInventoryInfo() const;
+
 	bool AddItem(const FItemStack& Item);
 	bool RemoveItem(const FItemStack& Item);
+	bool CheckItemIsAccepted(const FItemStack& Item);
 	int32 GetItemCount(int32 ItemID) const;
 
 	const TArray<FItemStack>& GetAllItems() const { return Items; }

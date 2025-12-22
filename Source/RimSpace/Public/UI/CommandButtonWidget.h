@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interface/CommandProvider.h"
 #include "CommandButtonWidget.generated.h"
 
 /**
@@ -14,7 +15,7 @@ class RIMSPACE_API UCommandButtonWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void Setup(const FText& CommandName, AActor* TargetActor);
+	void Setup(const FText& CommandName, TScriptInterface<ICommandProvider> TargetProvider);
 
 protected:
 	UPROPERTY(meta = (BindWidget))
@@ -27,7 +28,7 @@ private:
 	FText Cmd;
 
 	UPROPERTY()
-	AActor* Actor;
+	TScriptInterface<ICommandProvider> CommandActor;
 
 	UFUNCTION()
 	void OnButtonClicked();

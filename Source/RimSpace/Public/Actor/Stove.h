@@ -28,6 +28,8 @@ protected:
 	TObjectPtr<class UInventoryComponent> OutputInventory;
 	
 private:
+	void TestAddAndRemoveItem(const FText& Command);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stove", meta = (AllowPrivateAccess = "true"))
 	int32 TaskRemainCount;
 

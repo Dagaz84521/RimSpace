@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "GameInstance/RimSpaceItemGameInstance.h"
+#include "GameInstance/RimSpaceGameInstance.h"
 
-void URimSpaceItemGameInstance::Init()
+void URimSpaceGameInstance::Init()
 {
 	Super::Init();
 
@@ -24,7 +24,7 @@ void URimSpaceItemGameInstance::Init()
 	}
 }
 
-const UItemData* URimSpaceItemGameInstance::GetItemData(int32 ItemID) const
+const UItemData* URimSpaceGameInstance::GetItemData(int32 ItemID) const
 {
 	if (const TObjectPtr<UItemData>* Found = ItemMap.Find(ItemID))
 	{

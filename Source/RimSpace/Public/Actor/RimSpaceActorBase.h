@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "EActorType.h"
 #include "GameFramework/Actor.h"
-#include "Interface/InteractionActorInterface.h"
+#include "Interface/InteractionInterface.h"
 #include "Interface/TimeAffectable.h"
 #include "Data/TimeTracker.h"
 #include "RimSpaceActorBase.generated.h"
@@ -13,7 +13,7 @@
 
 
 UCLASS()
-class RIMSPACE_API ARimSpaceActorBase : public AActor, public IInteractionActorInterface, public ITimeAffectable
+class RIMSPACE_API ARimSpaceActorBase : public AActor, public IInteractionInterface, public ITimeAffectable
 {
 	GENERATED_BODY()
 	
