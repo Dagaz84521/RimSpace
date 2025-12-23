@@ -11,6 +11,8 @@
 #include "Navigation/PathFollowingComponent.h"
 #include "RimSpaceCharacterBase.generated.h"
 
+struct FAgentCommand;
+class UInventoryComponent;
 class ARimSpaceActorBase;
 
 USTRUCT(BlueprintType)
@@ -63,16 +65,18 @@ public:
 	virtual FString GetActorName() const override;
 	virtual FString GetActorInfo() const override;
 
+	bool ExecuteAgentCommand(const FAgentCommand& Command);
+
 protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	void MoveToPoint(ARimSpaceActorBase* Target); // 移动到指定地点
+	void MoveTo(const FName& Target); // 移动到指定地点
 	UFUNCTION()
 	void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
-	void TakeItem(int32 ItemID); // 从当前地点拾取物品
-	void PutItem(int32 ItemId); // 在当前地点放下携带物品
-	void UseCurrent(); // 使用当前地点功能
+	void TakeItem(int32 ItemID, int32 Count); // 从当前地点拾取物品
+	void PutItem(int32 ItemId, int32 Count); // 在当前地点放下携带物品
+	void UseFacility(int32 ParamId); // 使用当前地点功能
 
 	// 人物基本属性
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
@@ -84,7 +88,7 @@ protected:
 	
 	// 人物携带的物品
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
-	FString CarriedItem;
+	UInventoryComponent* CarriedItems; 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Character")
 	ARimSpaceActorBase* CurrentPlace;
@@ -92,21 +96,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Character")
 	ARimSpaceActorBase* TargetPlace;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
-	FTimeTracker HungerDecreaseTimeTracker;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
-	FTimeTracker EnergyDecreaseTimeTracker;
-
 	int32 CurrentMinute;
 	int32 CurrentHour;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Character")
-	float HungerDecreaseAmount = 1.0f;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="Character")
-	float EnergyDecreaseAmount = 1.0f;
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
 	TObjectPtr<class UInventoryComponent> InventoryComponent;
 };

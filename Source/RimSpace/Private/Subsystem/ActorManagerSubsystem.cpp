@@ -12,3 +12,8 @@ void UActorManagerSubsystem::RegisterActorWithName(const FName& Name, ARimSpaceA
 	RegisteredActors.Add(Name, Actor);
 	UE_LOG(LogTemp, Log, TEXT("Registered actor with name %s."), *Name.ToString());
 }
+
+ARimSpaceActorBase* UActorManagerSubsystem::GetActorByName(const FName& Name)
+{
+	return RegisteredActors.Contains(Name) ? RegisteredActors[Name] : nullptr;
+}

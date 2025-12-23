@@ -3,9 +3,13 @@ UENUM(BlueprintType)
 enum class EInteractionType: uint8
 {
 	EAT_None UMETA(DisplayName = "无"),
-	EAT_Chamber UMETA(DisplayName = "培养仓"),
-	EAT_Kitchen UMETA(DisplayName = "厨房"),
+	EAT_CultivateChamber UMETA(DisplayName = "培养仓"),
+	EAT_Stove UMETA(DisplayName = "厨房"),
 	EAT_WorkStation UMETA(DisplayName = "工作台"),
+	EAT_Fridge UMETA(DisplayName = "冰箱"),
+	EAT_Storage UMETA(DisplayName = "仓库"),
+	EAT_Bed UMETA(DisplayName = "床"),
+	EAT_Table UMETA(DisplayName = "桌子"),
 };
 
 UENUM(BlueprintType)

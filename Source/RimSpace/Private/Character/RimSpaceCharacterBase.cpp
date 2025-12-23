@@ -8,7 +8,10 @@
 #include "Component/InventoryComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "NavigationSystem.h"
+#include "../../../../../../../Program/UE_5.4/Engine/Plugins/Runtime/RigVM/Source/RigVMDeveloper/Public/RigVMModel/RigVMControllerActions.h"
+#include "Data/AgentCommand.h"
 #include "RimSpace/RimSpace.h"
+#include "Subsystem/ActorManagerSubsystem.h"
 
 // Sets default values
 ARimSpaceCharacterBase::ARimSpaceCharacterBase()
@@ -37,8 +40,9 @@ void ARimSpaceCharacterBase::BeginPlay()
 	}
 }
 
-void ARimSpaceCharacterBase::MoveToPoint(ARimSpaceActorBase* Target)
+void ARimSpaceCharacterBase::MoveTo(const FName& TargetName)
 {
+	ARimSpaceActorBase* Target = GetWorld()->GetSubsystem<UActorManagerSubsystem>()->GetActorByName(TargetName);
 	if (!Target) return;
 
 	AAIController* AICon = Cast<AAIController>(GetController());
@@ -91,6 +95,40 @@ void ARimSpaceCharacterBase::OnMoveCompleted(FAIRequestID RequestID, EPathFollow
 	
 }
 
+void ARimSpaceCharacterBase::TakeItem(int32 ItemID, int32 Count)
+{
+}
+
+void ARimSpaceCharacterBase::PutItem(int32 ItemId, int32 Count)
+{
+}
+
+void ARimSpaceCharacterBase::UseFacility(int32 ParamId)
+{
+	if (CurrentPlace == nullptr) return;
+	EInteractionType InteractionType = CurrentPlace->GetInteractionType();
+	switch (InteractionType)
+	{
+	case EInteractionType::EAT_Stove:
+		// 使用炉灶烹饪
+			break;
+	case EInteractionType::EAT_CultivateChamber:
+		// 使用培养舱种植
+			break;
+	case EInteractionType::EAT_WorkStation:
+		// 使用工作台制造
+			break;
+	case EInteractionType::EAT_Table:
+		// 在餐桌上用餐
+		break;
+	case EInteractionType::EAT_Bed:
+		// 使用床休息
+			break;
+	default:
+		break;
+	}
+}
+
 // Called every frame
 void ARimSpaceCharacterBase::Tick(float DeltaTime)
 {
@@ -108,21 +146,6 @@ void ARimSpaceCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerIn
 void ARimSpaceCharacterBase::UpdateEachMinute_Implementation(int32 NewMinute)
 {
 	ITimeAffectable::UpdateEachMinute_Implementation(NewMinute);
-
-	int32 TimePassed = NewMinute - CurrentMinute;
-	HungerDecreaseTimeTracker.TimeAccumulator += TimePassed;
-	EnergyDecreaseTimeTracker.TimeAccumulator += TimePassed;
-	if (HungerDecreaseTimeTracker.TimeAccumulator >= HungerDecreaseTimeTracker.MinutesInterval)
-	{
-		CharacterStats.Hunger = FMath::Clamp(CharacterStats.Hunger - HungerDecreaseAmount, 0.0f, CharacterStats.MaxHunger);
-		HungerDecreaseTimeTracker.TimeAccumulator = 0;
-	}
-	if (EnergyDecreaseTimeTracker.TimeAccumulator >= EnergyDecreaseTimeTracker.MinutesInterval)
-	{
-		CharacterStats.Energy = FMath::Clamp(CharacterStats.Energy - EnergyDecreaseAmount, 0.0f, CharacterStats.MaxEnergy);
-		EnergyDecreaseTimeTracker.TimeAccumulator = 0;
-	}
-	
 }
 
 void ARimSpaceCharacterBase::UpdateEachHour_Implementation(int32 NewHour)
@@ -156,6 +179,25 @@ FString ARimSpaceCharacterBase::GetActorInfo() const
 		CharacterStats.Energy,
 		CharacterStats.MaxEnergy
 	);
+}
+
+bool ARimSpaceCharacterBase::ExecuteAgentCommand(const FAgentCommand& Command)
+{
+	switch (Command.CommandType)
+	{
+	case EAgentCommandType::Move:
+		MoveTo(Command.TargetName);
+		return true;
+	case EAgentCommandType::Take:
+		return TakeItem(Command.ParamID, Command.Count);
+	case EAgentCommandType::Put:
+		return PutItem(Command.ParamID, Command.Count);
+	case EAgentCommandType::Use:
+		return Use(Command.ParamID);
+	default:
+		UE_LOG(LogTemp, Warning, TEXT("ExecuteAgentCommand: Received None or Unknown command."));
+		return false;
+	}
 }
 
 

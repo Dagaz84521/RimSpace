@@ -25,16 +25,8 @@ public:
 	AWorkStation();
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
-	TObjectPtr<class UInventoryComponent> InputInventory;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
-	TObjectPtr<class UInventoryComponent> OutputInventory;
+	TObjectPtr<class UInventoryComponent> Inventory;
 private:
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "WorkStation", meta = (AllowPrivateAccess = "true"))
-	TMap<int32, int32> RawMaterialStorage; //todo: 后续可以改成TMap<FName, int32>或者使用enum
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "WorkStationr", meta = (AllowPrivateAccess = "true"))
-	TMap<int32, int32> ProductStorage; //todo: 后续可以改成TMap<FName, int32>或者使用enum
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "WorkStation", meta = (AllowPrivateAccess = "true"))
 	TMap<int32, int32> TaskList; // TaskID, 剩余任务数
 };

@@ -14,6 +14,7 @@ UENUM(BlueprintType)
 enum class ECultivateType : uint8
 {
 	ECT_None UMETA(DisplayName = "None"),
+	ECT_Wait UMETA(DisplayName = "Waiting"),
 	ECT_Cotton UMETA(DisplayName = "Cotton"),
 	ECT_Corn UMETA(DisplayName = "Corn")
 };	
@@ -36,19 +37,18 @@ public:
 	ACultivateChamber();
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
-	TObjectPtr<class UInventoryComponent> OutputInventory;
+	TObjectPtr<class UInventoryComponent> Inventory;
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CultivateChamber", meta = (AllowPrivateAccess = "true"))
-	ECultivateType CultivateType;
+	ECultivateType CurrentCultivateType;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CultivateChamber", meta = (AllowPrivateAccess = "true"))
+	ECultivateType TargetCultivateType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CultivateChamber", meta = (AllowPrivateAccess = "true"))
 	int32 CultivateMaxProgress = 100;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CultivateChamber", meta = (AllowPrivateAccess = "true"))
 	int32 CultivateProgress;
-
-	// 临时物品存储区
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CultivateChamber", meta = (AllowPrivateAccess = "true"))
-	TMap<int32, int32> TempItemStorage; //todo: 后续可以改成TMap<FName, int32>或者使用enum
 };

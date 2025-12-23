@@ -16,7 +16,7 @@ class RIMSPACE_API UActorManagerSubsystem : public UWorldSubsystem
 	GENERATED_BODY()
 public:
 	void RegisterActorWithName(const FName& Name, ARimSpaceActorBase* Actor);
-
+	ARimSpaceActorBase* GetActorByName(const FName& Name);
 private:
 	TMap<FName, ARimSpaceActorBase*> RegisteredActors;
 };

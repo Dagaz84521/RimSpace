@@ -10,8 +10,6 @@
 #include "Data/TimeTracker.h"
 #include "RimSpaceActorBase.generated.h"
 
-
-
 UCLASS()
 class RIMSPACE_API ARimSpaceActorBase : public AActor, public IInteractionInterface, public ITimeAffectable
 {
@@ -36,17 +34,13 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* MeshComponent;
-
-	UPROPERTY(EditAnywhere)
-	FTimeTracker ProduceTimeTracker;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<class USceneComponent> InteractionPoint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FName ActorName;
-
-private:
+	
 	UPROPERTY(EditDefaultsOnly)
 	EInteractionType ActorType = EInteractionType::EAT_None;
 

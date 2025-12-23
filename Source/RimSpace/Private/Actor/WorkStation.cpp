@@ -16,17 +16,14 @@ void AWorkStation::ExecuteCommand(const FText& Command)
 FString AWorkStation::GetActorInfo() const
 {
 	FString Info;
-	FString InputInfo = InputInventory->GetInventoryInfo();
-	FString OutputInfo = OutputInventory->GetInventoryInfo();
-	Info += TEXT("=== 输入库存 ===\n");
-	Info += InputInfo;
-	Info += TEXT("=== 输出库存 ===\n");
-	Info += OutputInfo;
+	FString InventoryInfo = Inventory->GetInventoryInfo();
+	Info += TEXT("=== 库存 ===\n");
+	Info += InventoryInfo;
 	return Info;
 }
 
 AWorkStation::AWorkStation()
 {
-	InputInventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("InputInventory"));
-	OutputInventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("OutputInventory"));
+	Inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
+	ActorType = EInteractionType::EAT_WorkStation;
 }

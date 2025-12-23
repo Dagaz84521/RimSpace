@@ -23,22 +23,8 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
-	TObjectPtr<class UInventoryComponent> InputInventory;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
-	TObjectPtr<class UInventoryComponent> OutputInventory;
+	TObjectPtr<class UInventoryComponent> Inventory;
 	
 private:
 	void TestAddAndRemoveItem(const FText& Command);
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stove", meta = (AllowPrivateAccess = "true"))
-	int32 TaskRemainCount;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stove", meta = (AllowPrivateAccess = "true"))
-	int32 IngredientsCount;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stove", meta = (AllowPrivateAccess = "true"))
-	int32 ProductStorageCount;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Stove", meta = (AllowPrivateAccess = "true"))
-	int32 ProductStorageMaxCount;
 };
