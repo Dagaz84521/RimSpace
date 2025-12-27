@@ -7,15 +7,6 @@
 TArray<FText> AStove::GetCommandList() const
 {
 	TArray<FText> CommandList;
-	if (TaskRemainCount > 0)
-	{
-		CommandList.Add(FText::FromString(TEXT("取消任务")));
-		CommandList.Add(FText::FromString(TEXT("修改任务")));
-	}
-	else
-	{
-		CommandList.Add(FText::FromString(TEXT("添加任务")));
-	}
 	return CommandList;
 }
 

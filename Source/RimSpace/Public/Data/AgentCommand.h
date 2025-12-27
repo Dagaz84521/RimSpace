@@ -1,3 +1,5 @@
+#pragma once
+
 #include "CoreMinimal.h"
 #include "Actor/EActorType.h"
 #include "AgentCommand.generated.h"

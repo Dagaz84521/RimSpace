@@ -6,13 +6,14 @@
 #include "Actor/RimSpaceActorBase.h"
 #include "Data/TaskInfo.h"
 #include "Interface/CommandProvider.h"
+#include "Interface/WorkableInterface.h"
 #include "WorkStation.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RIMSPACE_API AWorkStation : public ARimSpaceActorBase, public ICommandProvider
+class RIMSPACE_API AWorkStation : public ARimSpaceActorBase, public ICommandProvider, public IWorkableInterface
 {
 	GENERATED_BODY()
 public:
@@ -21,7 +22,6 @@ public:
 	virtual void ExecuteCommand(const FText& Command) override;
 	// Actor信息接口
 	virtual FString GetActorInfo() const override;
-
 	AWorkStation();
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")

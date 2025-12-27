@@ -45,6 +45,16 @@ struct FRimSpaceCharacterSkills
 	bool bCanCraft; // 制造技能
 };
 
+UENUM(BlueprintType)
+enum class ECharacterActionState : uint8
+{
+	Idle        UMETA(DisplayName = "Idle"),
+	Moving      UMETA(DisplayName = "Moving"),
+	Working     UMETA(DisplayName = "Working"), // 正在向设施输送劳动力
+	Eating 		UMETA(DisplayName = "Eating"),  // 正在恢复饱食度
+	Sleeping    UMETA(DisplayName = "Sleeping") // 正在恢复自身状态
+};
+
 UCLASS()
 class RIMSPACE_API ARimSpaceCharacterBase : public ACharacter, public ITimeAffectable, public IInteractionInterface
 {
@@ -71,12 +81,14 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	void MoveTo(const FName& Target); // 移动到指定地点
+	bool MoveTo(const FName& Target); // 移动到指定地点
 	UFUNCTION()
 	void OnMoveCompleted(FAIRequestID RequestID, EPathFollowingResult::Type Result);
-	void TakeItem(int32 ItemID, int32 Count); // 从当前地点拾取物品
-	void PutItem(int32 ItemId, int32 Count); // 在当前地点放下携带物品
-	void UseFacility(int32 ParamId); // 使用当前地点功能
+	bool TakeItem(int32 ItemID, int32 Count); // 从当前地点拾取物品
+	bool PutItem(int32 ItemId, int32 Count); // 在当前地点放下携带物品
+	bool UseFacility(int32 ParamId); // 使用当前地点功能
+
+	int32 FindFoodInInventory() const; // 在背包中寻找食物
 
 	// 人物基本属性
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
@@ -85,12 +97,15 @@ protected:
 	// 人物技能
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
 	FRimSpaceCharacterSkills CharacterSkills;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
+	ECharacterActionState CurrentActionState = ECharacterActionState::Idle;
 	
 	// 人物携带的物品
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
 	UInventoryComponent* CarriedItems; 
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Character")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
 	ARimSpaceActorBase* CurrentPlace;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category="Character")
@@ -99,6 +114,9 @@ protected:
 	int32 CurrentMinute;
 	int32 CurrentHour;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Inventory")
-	TObjectPtr<class UInventoryComponent> InventoryComponent;
+	// 人物进食
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
+	int32 EatRemainingMinutes;
+	
+	float NutritionPerMinute = 0.0f;
 };

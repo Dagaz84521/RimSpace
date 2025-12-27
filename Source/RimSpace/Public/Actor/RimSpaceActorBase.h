@@ -10,6 +10,8 @@
 #include "Data/TimeTracker.h"
 #include "RimSpaceActorBase.generated.h"
 
+
+
 UCLASS()
 class RIMSPACE_API ARimSpaceActorBase : public AActor, public IInteractionInterface, public ITimeAffectable
 {
