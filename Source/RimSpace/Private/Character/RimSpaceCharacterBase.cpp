@@ -321,4 +321,9 @@ bool ARimSpaceCharacterBase::ExecuteAgentCommand(const FAgentCommand& Command)
 	}
 }
 
+ECharacterActionState ARimSpaceCharacterBase::GetActionState() const
+{
+	return CurrentActionState;
+}
+
 

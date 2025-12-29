@@ -76,6 +76,7 @@ public:
 	virtual FString GetActorInfo() const override;
 
 	bool ExecuteAgentCommand(const FAgentCommand& Command);
+	ECharacterActionState GetActionState() const;
 
 protected:
 	virtual void BeginPlay() override;
