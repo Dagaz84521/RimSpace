@@ -3,6 +3,8 @@
 
 #include "Subsystem/RimSpaceTimeSubsystem.h"
 
+#include "Subsystem/LLMCommunicationSubsystem.h"
+
 void URimSpaceTimeSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
 	Super::Initialize(Collection);
@@ -15,6 +17,10 @@ void URimSpaceTimeSubsystem::Deinitialize()
 
 void URimSpaceTimeSubsystem::Tick(float DeltaTime)
 {
+	if (!bIsTimeRunning)
+	{
+		return;
+	}
 	float GameDelta = DeltaTime * TimeScale;
 	TimeAccumulator += GameDelta;
 
@@ -34,7 +40,6 @@ void URimSpaceTimeSubsystem::Tick(float DeltaTime)
 				Minute = 0;
 				Hour++;
 				OnHourPassed.Broadcast(Hour);
-
 				if (Hour >= 24)
 				{
 					Hour = 0;
@@ -55,7 +60,31 @@ TStatId URimSpaceTimeSubsystem::GetStatId() const
 	RETURN_QUICK_DECLARE_CYCLE_STAT(URimSpaceTimeSubsystem, STATGROUP_Tickables);
 }
 
+void URimSpaceTimeSubsystem::StartTimeSystem(int32 StartDay, int32 StartHour, int32 StartMinute)
+{
+	Day = StartDay;
+	Hour = StartHour;
+	Minute = StartMinute;
+	TotalTicks = (Day - 1) * 24 * 60 + Hour * 60 + Minute;
+	bIsTimeRunning = true;
+}
+
+void URimSpaceTimeSubsystem::StopTimeSystem()
+{
+	bIsTimeRunning = false;
+}
+
+void URimSpaceTimeSubsystem::ResumeTimeSystem()
+{
+	bIsTimeRunning = true;
+}
+
 void URimSpaceTimeSubsystem::SetTimeScale(float NewScale)
 {
 	TimeScale = NewScale;
+}
+
+FString URimSpaceTimeSubsystem::GetFormattedTime() const
+{
+	return FString::Printf(TEXT("Day %d  %02d:%02d"), Day, Hour, Minute);
 }

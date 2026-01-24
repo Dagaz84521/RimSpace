@@ -52,7 +52,9 @@ enum class ECharacterActionState : uint8
 	Moving      UMETA(DisplayName = "Moving"),
 	Working     UMETA(DisplayName = "Working"), // 正在向设施输送劳动力
 	Eating 		UMETA(DisplayName = "Eating"),  // 正在恢复饱食度
-	Sleeping    UMETA(DisplayName = "Sleeping") // 正在恢复自身状态
+	Sleeping    UMETA(DisplayName = "Sleeping"), // 正在恢复自身状态
+	Waiting    UMETA(DisplayName = "Thinking"), // 等待一定时间直到下一指令
+	Thinking    UMETA(DisplayName = "Thinking") // 等待
 };
 
 UCLASS()
@@ -69,14 +71,20 @@ public:
 	
 	virtual void UpdateEachMinute_Implementation(int32 NewMinute) override;
 	virtual void UpdateEachHour_Implementation(int32 NewHour) override;
-
+	// Interaction Interface
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 	virtual FString GetActorName() const override;
 	virtual FString GetActorInfo() const override;
+	virtual TSharedPtr<FJsonObject> GetActorDataAsJson() const override;
+
+	void InitialCharacter(const FRimSpaceCharacterStats& Stats, const FRimSpaceCharacterSkills& Skills, const FName& Name);
 
 	bool ExecuteAgentCommand(const FAgentCommand& Command);
 	ECharacterActionState GetActionState() const;
+
+	void SetActionState(ECharacterActionState NewActionState);
+	void FinishCommandAndRequestNext();
 
 protected:
 	virtual void BeginPlay() override;
@@ -91,6 +99,9 @@ protected:
 
 	int32 FindFoodInInventory() const; // 在背包中寻找食物
 
+	UPROPERTY(EditAnywhere)
+	FName CharacterName;
+	
 	// 人物基本属性
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Character")
 	FRimSpaceCharacterStats CharacterStats;
@@ -120,4 +131,9 @@ protected:
 	int32 EatRemainingMinutes;
 	
 	float NutritionPerMinute = 0.0f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Character")
+	int32 WaitRemainingMinutes = 5;
+	
+	int32 ThinkingMinutes = 0;
 };

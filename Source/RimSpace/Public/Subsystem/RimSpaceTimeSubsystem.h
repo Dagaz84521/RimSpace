@@ -24,6 +24,14 @@ public:
 	bool IsTickable() const override { return true; }
 	virtual TStatId GetStatId() const override;
 
+	UFUNCTION(BlueprintCallable)
+	void StartTimeSystem(int32 StartDay = 1, int32 StartHour = 6, int32 StartMinute = 0);
+
+	UFUNCTION(BlueprintCallable)
+	void StopTimeSystem();
+	UFUNCTION(BlueprintCallable)
+	void ResumeTimeSystem();
+
 	// 倍速控制（1x，2x等）
 	UFUNCTION(BlueprintCallable)
 	void SetTimeScale(float NewScale);
@@ -35,6 +43,8 @@ public:
 	int32 Minute = 0;
 	int32 Hour = 0;
 	int32 Day = 1;
+	UFUNCTION()
+	FString GetFormattedTime() const;
 
 	// 事件广播
 	UPROPERTY(BlueprintAssignable)
@@ -47,4 +57,5 @@ private:
 	float TimeAccumulator = 0.0f;
 	float GameTickLength = 1.0f / 60.0f;   // RimWorld: 60 GameTick = 1 minute
 	float TimeScale = 2.0f;
+	bool bIsTimeRunning = false;
 };
